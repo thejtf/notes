@@ -1,166 +1,21 @@
-# 使用 Heptabase 管理数字花园
-
-## 是什么
-
-在 Heptabase 中编写笔记，自动同步到个人的数字花园中。
-
-- [数字花园地址](https://notes.dabing.one/) 
-
-- [原始白板地址](https://app.heptabase.com/w/d4cc3728297609add1a00aab108e90c4e57a1c378cfc2307c251745bf7d2a884)
-
-- Heptabase CSS 预览
-
-![](https://media.heptabase.com/v1/images/3120a828-7e72-4637-aaff-ff8b5d72a2b3/9fbf682c-71a2-4dd6-b915-056bc841b1e0/image.png)
-
-目前支持的功能
-
-- [x] 展示 Heptabase 的笔记内容
-
-- [x] Heptabase 编辑笔记可一键更新到网站
-
-- [x] 双向链接
-
-- [x] 深浅色模式
-
-- [x] 面包片导航交互（参考了 [Andyʼs working notes](https://notes.andymatuschak.org/Evergreen_notes)）
-
-- [x] 文字高亮
-
-- [x] 嵌入网易云音乐歌曲、专辑
-
-- [x] 嵌入视频
-
-## 使用方法
-
-### Heptabase
-
-1. 在 Heptabase 中创建一个白板，这个白板中的所有卡片都可以在数字花园中查看
-
-2. 公开此白板
-
-   ![](https://media.heptabase.com/v1/images/3120a828-7e72-4637-aaff-ff8b5d72a2b3/3a644a97-7a6a-4ef3-8ca5-a7a2b72c7d41/image.png)
-
-3. 根据你的喜好在上述白板中创建一些卡片，例如 About 介绍自己、Projects 介绍自己参与的项目等等
-
-### GitHub
-
-1. Fork [项目](https://github.com/draJiang/Heptabase-Blog)
-
-   ![](https://jiangzilong-image.oss-cn-beijing.aliyuncs.com/uPic/CleanShot2024-01-2920.55.33@2x20240129205602.png)
-
-2. 在 `src/config.js` 中设置你的网站名称等信息 
-
-   ```javascript
-   const CONFIG = {
-       'api_url': '',        // 已废弃，可忽略此项
-       'ga': 'G-XXXXXX',     // 填写 Google Analytics 的 ID，不填也没问题
-       'whiteboard_id': '',  // 填写白板 ID
-       'title': '数字花园🌱',  // 站点标题
-       'pages': {            // pages 里的标题和 ID 可自定义
-           'Articles': '2e0bbcb8-fdf7-4cdb-8ee2-9f0651b71550',
-           'Projects': '2e0bbcb8-fdf7-4cdb-8ee2-9f0651b71550',
-           'Activity': 'activity', // 站点活跃状态热力图
-           'About': '2e0bbcb8-fdf7-4cdb-8ee2-9f0651b71550',
-           'XXXXX':'xxxx-xxxx-xxx'
-       }
-   }
-   ```
-
-   配置 `pages` 后会显示在网站的右上角，点击会打开对应的卡片：
-
-   ![](https://media.heptabase.com/v1/images/3120a828-7e72-4637-aaff-ff8b5d72a2b3/ca5fc266-33e4-45f4-a504-d5addfeacae2/CleanShot2023-02-2323.34.27-2x.png)
-
-3. 自定义 LOGO
-
-   在 `public` 目录下替换 `favicon.ico`、`apple-touch-icon.png` 两个文件
-
-## Vercel
-
-1. 在 [Vercel](https://vercel.com/) 中新建项目
-
-2. 选择 GitHub 中对应的项目名称
-
-   ![](https://jiangzilong-image.oss-cn-beijing.aliyuncs.com/uPic/CleanShot2024-01-2921.02.23@2x20240129210251.png)
-
-3. 自定义域名
-
-   在 Vercel 中打开项目，在 Settings 中设置自己的域名
-
-   ![](https://jiangzilong-image.oss-cn-beijing.aliyuncs.com/uPic/CleanShot2024-01-3002.29.41@2x20240130023011.png)
-
-## 一些小技巧
-
-### 嵌入 HTML
-
-Buy me a coffee
-
-```html
-{HTML}
-<a href="https://www.buymeacoffee.com/jiangzilong"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=jiangzilong&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a>
-```
-
-Producthunt
-
-```html
-{HTML}
-<a href="https://www.producthunt.com/posts/share-your-knowledge?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-share&#0045;your&#0045;knowledge" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=395211&theme=neutral" alt="Share&#0032;your&#0032;knowledge - based&#0032;on&#0032;your&#0032;Heptabase&#0032;data | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-```
-
-Bandcamp
-
-```html
-{HTML}
-<iframe style="border: 0; width: 100%; height: 120px;" src="https://bandcamp.com/EmbeddedPlayer/album=2906945127/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless><a href="https://rhodadakar.bandcamp.com/album/as-tears-go-by">As Tears Go By by Rhoda Dakar</a></iframe>
-```
-
-上述样式在编辑器中是这个样子：
-
-![](https://jiangzilong-image.oss-cn-beijing.aliyuncs.com/uPic/CleanShot2024-02-2205.09.49@2x20240222051016.png)
-
----
-
-## 为什么不用其他方式
-
-### 工具选择
-
-尝试过 [HUGO](https://gohugo.io/) 和 [Notion](https://sspai.com/post/66678) 等方式、研究了 [obsidian publish](https://obsidian.md/publish)，也实践用 Notion 维护了一年的[博客](https://blog.dabing.one/)，但一直没有找到比较理想的方案。
-
-一方面，笔记在 Heptabase 中，文章放到其他平台会导致双向链接失效。我在实践卡片笔记法，文章与笔记有高度的关联性，例如下面这篇文章中就存在多个卡片链接，但是这些链接在 Heptabase 以外的地方显示时就无法正常打卡笔记，所以不得不转为普通文本，这不但增加了工作量，也使得原本文章的脉络失效。
-
-![](https://media.heptabase.com/v1/images/3120a828-7e72-4637-aaff-ff8b5d72a2b3/7fa14e75-12eb-4ff4-97bc-1b5f0582d7ae/image.png)
-
-另一方面，笔记、文章数据在不同平台有多份副本，后续修改起来就要穿梭在不同平台中进行更新，维护成本高。
-
-Heptabase 本身也支持公开笔记，但移动端的支持不太好，于是决定自己开发了一个。
-
-### 博客 vs 数字花园
-
-数字花园的理念与我正在使用的卡片笔记法、Heptabase 的设计哲学更加贴近，所以放弃了持续 1 年的博客，改用数字花园的方式维护自己的个人站点，下面会详细介绍一下原因。
-
-## 对数字花园的理解
-
-聊一下我对数字花园理解，以及如何将这些理解体现到网站的设计上。
-
-### 知识的持续性
-
-数字花园的内容是持续迭代的，我可以发布尚不成熟的想法（不一定要等到输出完整的文章）并且可以在发布后持续的修订。所以在笔记列表中，不是强调笔记的创建时间而是展示最近编辑时间，并将最近编辑的笔记展示在最前，方便阅读者理解笔记的活跃状态。
-
-![](https://media.heptabase.com/v1/images/3120a828-7e72-4637-aaff-ff8b5d72a2b3/3a43cd07-74f1-4223-a696-2ac8cf82c590/image.png)
-
-这和我运用的卡片笔记法理念一致，通过不断的积累、迭代卡片完成文章的输出，而不是一来就面对一张白纸一步到位完成创作。（写作不是从零开始）
-
-### 思考的脉络
-
-传统博客通常会按创建时间展示文章列表供用户阅读，通过标签筛选某个类型的文章。而数字花园则强调思考的脉络，具体体现在以下几点
-
-1. 弱化文章列表，用一个介绍页/索引页作为阅读者漫游的起点
-
-2. 支持双向链接，阅读者可以看到与当前文章关联的其他知识、想法
-
-3. 支持开头提到的[面包片导航](https://notes.andymatuschak.org/Evergreen_notes)的交互方式，阅读者可以快速地在不同笔记间流转
-
-数字花园的首页与双向链接：
-
-![](https://media.heptabase.com/v1/images/3120a828-7e72-4637-aaff-ff8b5d72a2b3/25b1dc56-b936-4afd-a3c6-eec9c58a47c9/image.png)
-
-总的来说，使用持续迭代的、重在体现思考脉络的方式记录想法，最终也用同样的方式分享知识，这是我选择数字花园并开发此网站的原因。
+# 个人使用说明书 Jopus Manual
+
+## 什么是个人使用说明书
+当我们购买一台微波炉、电饭煲或者打印机时，一般都会拿到一份产品使用说明书，介绍产品的各项功能、推荐使用环境、安全警告和维护建议等。
+
+那么，针对“人”这么一个复杂的“产品”，我们是不是也可以做一份个人使用说明书，让同事们在发消息前就知道如何更好地“使用”你，从而节省双方时间，宾主尽欢？
+
+这种「将自我作为产品来管理」（self-management as a product）的概念，最初源于纽约时报 2013 年的一篇文章 - <Want to Know Me? Just Read My User Manual>。
+
+## 个人说明书有什么作用
+
+### 加深自我认知
+用文档写一份个人使用说明书，是一个深度探索自我认知的过程。通过了解自己、认识自己、使用自己的过程，能 360° 全面分析自己的优点和劣势。
+### 促成更有效的协作
+不需要花几个月的时间去揣摩对方的喜好、优势和弱点，就可以快速了解你能怎么帮助到对方，以及对方可以怎么帮助到你，极速建立合作的信任基础💪
+### 避免尴尬和失误
+提前知道对方的个性脾气、工作风格、个人兴趣甚至是“怪癖”，就能有针对性地绕过雷区，规避矛盾。降低试错成本后，互相之间才有心理安全感，沟通合作效果更佳👍
+### 打破信息不透明
+“秘而不宣”的文化和基于关系的信息壁垒，对于一个人的整体发展是极其不利的。在外部环境快速变化的时代，更需要打破信息不透明才能快速成长。
+### 有利于他人了解
+“个人使用说明书”是一个非常有效的工具，节约了互相探索对方和收集“信号”的成本。
