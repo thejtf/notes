@@ -17,22 +17,7 @@ const getCardName = (cardId) => {
 
 }
 
-// fetch 错误时的反馈弹窗
-const showConfirm = () => {
-    confirm({
-        title: 'Sorry,some ting erro😥',
-        // icon: <ExclamationCircleFilled />,
-        content: 'Please try refresh',
-        okText: 'Refresh',
-        onOk() {
-            console.log('Refresh');
-            window.location.replace(window.location.href)
-        },
-        onCancel() {
-            console.log('Cancel');
-        },
-    });
-};
+
 
 // 计算指定时间与当前的时间差
 const getLastEditedTime = (dateBegin) => {
@@ -64,42 +49,7 @@ const getLastEditedTime = (dateBegin) => {
 
 }
 
-// 处理网易云音乐
-// 输入 markdown 格式的 URL，例如 [xxx](http:....)，返回网易云音乐的 iframe HTML
-const setNeteaseMusic = (custom_old_card) => {
-    // 判断类型是歌曲还是歌单
-    let type = 2 //歌曲
-    let height_1 = 52
-    let height_2 = 32
-    if (custom_old_card.indexOf('playlist') > -1 || custom_old_card.indexOf('album') > -1) {
 
-        height_1 = 110
-        height_2 = 90
-
-        if (custom_old_card.indexOf('playlist') > -1) {
-            type = 0 // 歌单
-        }
-        if (custom_old_card.indexOf('album') > -1) {
-            type = 1 // 专辑
-        }
-    }
-
-    // 获取歌曲 ID
-    let music_id_reg = /[0-9]{4,14}/g
-    let music_id_list = custom_old_card.match(music_id_reg)
-
-    if (music_id_list) {
-        // 匹配到 ID
-        let music_id = music_id_list[0]
-        let netease_music_iframe = '<div class="music netease_music"><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" height=' + height_1 + ' style="width: 100%; " src="//music.163.com/outchain/player?type=' + type + '&id=' + music_id + '&auto=0&height=' + height_2 + '"></iframe></div>'
-
-        return netease_music_iframe
-
-    } else {
-        return undefined
-    }
-
-}
 
 // 修复单个 md 文件中的 img
 const getClearImag = (card) => {
@@ -230,15 +180,13 @@ const getHeptabaseDataFromServer = async () => {
         const getDataResponse = await result.json();
 
         if (getDataResponse.code === 0) {
-            // 成功获取数据
+                // 成功获取数据
 
-            const data = getDataResponse
-            // 处理卡片数据
-            const newData = handleHeptabaseData(data)
-            return data
+                const data = getDataResponse
+                // 处理卡片数据
+                return handleHeptabaseData(data)
 
-
-        } else {
+            } else {
             // 未成功获取，需要添加此白板到服务端中
 
             let myHeaders = new Headers();
@@ -283,54 +231,8 @@ const getHeptabaseDataFromServer = async () => {
 const getHeptabaseData = async () => {
     console.log('getHeptabaseData');
 
-    return handleHeptabaseData(heptabaseData)
-
-    // 获取本地数据
-    let heptabaseDataFromLocal = JSON.parse(localStorage.getItem("heptabase_blog_data"))
-
-
-    if (heptabaseDataFromLocal) {
-
-        // 存在本地数据
-        if (heptabaseDataFromLocal.data?.Etag && heptabaseDataFromLocal.whiteboard_id) {
-
-            // 判断本地数据是否需要更新
-            let myHeaders = new Headers();
-            myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
-
-            let requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-            };
-
-            const whiteboard_id = CONFIG.whiteboard_id;
-            const result = await fetch("https://api.blog.kii.la/etag?shared-id=" + whiteboard_id, requestOptions)
-            const etagFromServer = await result.json();
-
-            console.log('etagFromServer:');
-            console.log(etagFromServer);
-
-            // Etag 不同或者本地缓存的白板 ID 与配置中的不同
-            if (etagFromServer.data !== heptabaseDataFromLocal.data.Etag || heptabaseDataFromLocal.whiteboard_id !== whiteboard_id) {
-                //需要更新
-                const data = await getHeptabaseDataFromServer();
-                return data;
-            } else {
-                //不需要更新
-                return heptabaseDataFromLocal;
-            }
-        } else {
-            // 需要到服务端获取
-            const data = await getHeptabaseDataFromServer();
-            return data;
-        }
-
-    } else {
-        // 本地不存在数据，则需要到服务端获取
-        const heptabaseDataFromServer = await getHeptabaseDataFromServer();
-        return heptabaseDataFromServer;
-    }
+    // 直接返回本地数据处理结果
+    return handleHeptabaseData(heptabaseData);
 };
 
 

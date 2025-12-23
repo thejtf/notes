@@ -50,7 +50,7 @@ function Nav(props) {
 
         < Navbar shouldHideOnScroll isBlurred={false} maxWidth={'full'} height={'3rem'} isBordered={true} >
             <NavbarBrand>
-                <span onClick={handleNavBarClick}><Link to='/'><img style={{ width: '22px' }} src={logo}></img></Link></span>
+                <span onClick={handleNavBarClick}><Link to='/'><img style={{ width: '22px' }} src={logo} alt="Logo"></img></Link></span>
             </NavbarBrand >
             <NavbarContent className='nav' justify="end"
                 style={{ marginBottom: '0' }}

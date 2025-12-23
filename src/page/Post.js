@@ -1,25 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import WidgetBot, { API } from '@widgetbot/react-embed'
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import WidgetBot from '@widgetbot/react-embed'
 import CONFIG from '../config';
 
 import Container from '../components/Container'
 import Nav from '../components/Nav';
-import Footer from '../components/Footer'
 import Loading from '../components/Loading'
-import { NextUIProvider } from "@nextui-org/system";
 
 import '../style.css'
-// import '../style.css'
 import 'github-markdown-css'
 import 'antd/dist/reset.css';
 
-import { getHeptabaseData, getClearCard, getClearImag, heptaToMD } from '../constantFunction'
-import { id } from 'date-fns/locale';
+import { getHeptabaseData, getClearCard, heptaToMD } from '../constantFunction'
 
-import useHash from "../hooks/useHash";
-
-import { Button, message, Tooltip } from 'antd';
+import { message } from 'antd';
 
 import Clipboard from 'clipboard';
 
@@ -38,18 +32,11 @@ function Post(props) {
     const [activeNote, setActiveNote] = useState('null');
     const [showChatWindow, setShowChatWindow] = useState(false);
 
-    let { param1 } = useParams();
     let location = useLocation();
     let navigate = useNavigate();
 
     // console.log('location.search');
     // console.log(location.search);
-
-    // useEffect(() => {
-    //     // 在此可以处理 param1 或者其他路径参数的变化
-    //     console.log('useEffect param');
-    //     console.log(param1);
-    // }, [param1]);
 
     useEffect(() => {
         console.log('Post useEffect');
@@ -63,7 +50,7 @@ function Post(props) {
         // handleHashChange(window.location.href, props['card'])
 
         // 在此可以处理查询参数 myQueryParam 的变化
-    }, [location.search]);
+    }, [location.search, HOME_DATA]);
 
 
     useEffect(() => {
@@ -96,7 +83,6 @@ function Post(props) {
         }).catch(error => {
             console.error('Error:', error);
         });
-
 
     }, [])
 
@@ -387,33 +373,7 @@ function Post(props) {
 
     }
 
-    const addShareBtn = () => {
-        // 增加分享按钮
-        // let btn = < button data-clipboard-text='这里是需要复制的文本123'
-        //     className="copy-btn"
-        //     type="button" > Copy</button >
-        let share_btn = document.createElement('button')
-        share_btn.classList.add('copy-btn')
-        share_btn.setAttribute('data-clipboard-text', '这里是需要复制的文本1232323')
-        share_btn.innerText = '🔗'
 
-
-        let notes = document.getElementsByClassName('note_article')
-
-        for (let i = 0; i < notes.length; i++) {
-            if (notes[i].getElementsByClassName('copy-btn').length > 0) {
-                // 已经有分享按钮，不用重复添加
-                continue
-            } else {
-                console.log(notes);
-                let note_link = window.location.origin + '/post?note-id=' + notes[i].parentElement.getAttribute('note_id')
-                share_btn.setAttribute('data-clipboard-text', note_link)
-                notes[i].appendChild(share_btn)
-            }
-        }
-
-
-    }
 
     // 删除 URL 中不存在的 Card
     const resetCardList = () => {
