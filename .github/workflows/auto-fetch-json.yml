@@ -3,8 +3,14 @@ name: Auto Fetch JSON Data
 on:
   schedule:
     # 每 10 分钟运行一次（用于测试，后续可改回每小时）
+    # 注意：GitHub Actions 定时任务使用 UTC 时间
     - cron: '*/10 * * * *'
   workflow_dispatch:  # 也支持手动触发
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/auto-fetch-json.yml'
 
 jobs:
   auto-fetch-json:
@@ -70,11 +76,14 @@ jobs:
         if: always()
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📋 Workflow Event: ${{ github.event_name }}"
+          echo "📋 Triggered by: ${{ github.actor }}"
+          echo "⏰ Time: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           if [ "${{ steps.check.outputs.changed }}" == "true" ]; then
             echo "✅ SUCCESS: Data updated automatically"
             echo "🔄 Changes detected from Heptabase"
             echo "🚀 Vercel deployment will be triggered"
-            echo "⏰ Time: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           else
             echo "⏭️  No changes detected"
             echo "💡 Next check in 10 minutes"
