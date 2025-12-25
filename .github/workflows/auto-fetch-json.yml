@@ -1,0 +1,83 @@
+name: Auto Fetch JSON Data
+
+on:
+  schedule:
+    # 每小时的第 0 分钟运行（UTC 时间）
+    - cron: '0 * * * *'
+  workflow_dispatch:  # 也支持手动触发
+
+jobs:
+  auto-fetch-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+          token: ${{ secrets.ACTION_TOKEN }}
+
+      - name: Fetch latest JSON data
+        id: fetch
+        run: |
+          # 获取最新数据到临时文件
+          curl -f -s -S --max-time 10 \
+            https://api.dabing.one?whiteboard_id=76bdbed57a91aa4e93c43452bc55b87013ad17c12792a8c50614b628947cf8e4 \
+            > data.json.new || {
+            echo "❌ Failed to fetch data from API"
+            exit 1
+          }
+          echo "✅ Successfully fetched latest data from API"
+          
+      - name: Check if data changed
+        id: check
+        run: |
+          # 检查数据是否变化
+          if [ -f src/resources/data.json ]; then
+            # 使用 SHA256 哈希比较
+            OLD_HASH=$(sha256sum src/resources/data.json | cut -d' ' -f1)
+            NEW_HASH=$(sha256sum data.json.new | cut -d' ' -f1)
+            
+            if [ "$OLD_HASH" == "$NEW_HASH" ]; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+              echo "⏭️  Data unchanged - no changes detected"
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+              echo "🔄 Data changed - will commit and deploy"
+            fi
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "📝 No existing data.json found - will create"
+          fi
+          
+          # 移动新数据到目标位置
+          mv data.json.new src/resources/data.json
+
+      - name: Auto commit and deploy (only if changed)
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git checkout -B main 
+          git pull origin main --rebase || true
+          git add src/resources/data.json
+          git commit -m "Auto-update: Heptabase changes detected [$(date -u +'%Y-%m-%d %H:%M:%S UTC')]"
+          git push origin main
+          echo "✅ Data committed and pushed - Vercel will deploy automatically"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
+      
+      - name: Summary
+        if: always()
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          if [ "${{ steps.check.outputs.changed }}" == "true" ]; then
+            echo "✅ SUCCESS: Data updated automatically"
+            echo "🔄 Changes detected from Heptabase"
+            echo "🚀 Vercel deployment will be triggered"
+            echo "⏰ Time: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          else
+            echo "⏭️  No changes detected"
+            echo "💡 Next check in 1 hour"
+          fi
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
