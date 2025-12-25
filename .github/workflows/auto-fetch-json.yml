@@ -60,6 +60,7 @@ jobs:
           git pull origin main --rebase || true
           git add src/resources/data.json
           git commit -m "Auto-update: Heptabase changes detected [$(date -u +'%Y-%m-%d %H:%M:%S UTC')]"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin main
           echo "✅ Data committed and pushed - Vercel will deploy automatically"
         env:
