@@ -2,9 +2,8 @@ name: Auto Fetch JSON Data
 
 on:
   schedule:
-    # 每 10 分钟运行一次（用于测试，后续可改回每小时）
-    # 注意：GitHub Actions 定时任务使用 UTC 时间
-    - cron: '*/10 * * * *'
+    # 每小时的第 0 分钟运行（UTC 时间）
+    - cron: '0 * * * *'
   workflow_dispatch:  # 也支持手动触发
   push:
     branches:
@@ -86,7 +85,7 @@ jobs:
             echo "🚀 Vercel deployment will be triggered"
           else
             echo "⏭️  No changes detected"
-            echo "💡 Next check in 10 minutes"
+            echo "💡 Next check in 1 hour"
           fi
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
