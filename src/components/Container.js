@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from "react-router";
 
 import { format } from 'date-fns'
 
@@ -25,11 +24,6 @@ function Container(props) {
     let [TooltipsOpen, setTooltipsOpen] = useState(false)
     // 记录当前文章的 ID
     let [thisPageId, setPageID] = useState('')
-
-    // 当前路径信息
-    let path = window.location.pathname
-
-
 
     // 记录自定义的 Link 数据，用来实现 DOM 链接的间接跳转
     // let [my_link, setLink] = useState('');
