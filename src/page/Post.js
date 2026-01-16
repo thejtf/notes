@@ -50,6 +50,7 @@ function Post(props) {
         // handleHashChange(window.location.href, props['card'])
 
         // 在此可以处理查询参数 myQueryParam 的变化
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search, HOME_DATA]);
 
 
@@ -84,6 +85,7 @@ function Post(props) {
             console.error('Error:', error);
         });
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleShowChatWindow = () => {
@@ -102,7 +104,7 @@ function Post(props) {
         console.log('Post findContent for:');
         for (let i = 0; i < heptabase_blog_data.cards.length; i++) {
 
-            if (heptabase_blog_data.cards[i]['id'] == id) {
+            if (heptabase_blog_data.cards[i]['id'] === id) {
 
                 // // 处理内容中的图片
                 // heptabase_blog_data.cards[i] = getClearImag(heptabase_blog_data.cards[i])
@@ -195,7 +197,7 @@ function Post(props) {
                         // URL 参数 !== current_id
                     }
 
-                    if (new_url_search == '') {
+                    if (new_url_search === '') {
                         new_url_search += '?note-id=' + url_search_list[i]
                     } else {
                         new_url_search += '&note-id=' + url_search_list[i]
@@ -207,7 +209,7 @@ function Post(props) {
                     }
                 }
 
-                if (new_url_search == '') {
+                if (new_url_search === '') {
                     new_url_search += '?note-id=' + link_id
                 } else {
                     new_url_search += '&note-id=' + link_id
@@ -253,7 +255,7 @@ function Post(props) {
         let url_search_list = getUrlSearch_req['url_search_list']
 
         for (let i = 0; i < url_search_list.length; i++) {
-            if (url_search_list[i] == '') {
+            if (url_search_list[i] === '') {
                 continue
             }
             // 将数据保存到 card list 中
@@ -522,7 +524,7 @@ function Post(props) {
             if (type > 0) {
 
                 // 如果元素无标题
-                if (note.classList.contains('mini') == false) {
+                if (note.classList.contains('mini') === false) {
                     // 前一个元素显示垂直标题
                     let note_title = document.createElement('div')
                     note_title.classList.add('note_title')
@@ -677,7 +679,7 @@ function Post(props) {
 
     // return() {
 
-    if (HEPTABASE_DATA === null || cardList.length === 0) {
+    if (!HEPTABASE_DATA || cardList.length === 0) {
         return (<div>
             {/* <Nav /> */}
             <div className='notes' style={{
@@ -698,43 +700,50 @@ function Post(props) {
 
             // 获取用户关注的笔记进行展示
 
-            let card = cardList[cardList.length - 1]
+            let card = null;
+            if (cardList.length > 0) {
+                card = cardList[cardList.length - 1]
 
-            for (let k = 0; k < cardList.length; k++) {
-                if (cardList[k]['card']['id'] === ACTIVE_NOTE) {
-                    card = cardList[k]
-                    break;
+                for (let k = 0; k < cardList.length; k++) {
+                    if (cardList[k] && cardList[k]['card'] && cardList[k]['card']['id'] === ACTIVE_NOTE) {
+                        card = cardList[k]
+                        break;
+                    }
                 }
             }
 
             //设置笔记样式
             // left = index*40px; right = index*-40-400
-            let note_style = {
-                left: 0
+            if (card) {
+                let note_style = {
+                    left: 0
+                }
+                card_list_dom.push(<Container style={note_style} key={card['card']['id']} handleHashChange={handleHashChange} handleLinkClick={handleLinkClick} card={card} />)
             }
-            card_list_dom.push(<Container style={note_style} key={card['card']['id']} handleHashChange={handleHashChange} handleLinkClick={handleLinkClick} card={card} />)
         } else {
             for (let i = 0; i < cardList.length; i++) {
                 let card = cardList[i]
 
                 //设置笔记样式
                 // left = index*40px; right = index*-40-400
-                let note_style = {
-                    left: i * 40 + 'px',
-                    right: -694.8 + (cardList.length - i) * 40 + 'px',
-                    flex: '0 0 auto'
-                }
+                if (card && card['card']) {
+                    let note_style = {
+                        left: i * 40 + 'px',
+                        right: -694.8 + (cardList.length - i) * 40 + 'px',
+                        flex: '0 0 auto'
+                    }
 
-                let note = <Container style={note_style} key={card['card']['id']} handleHashChange={handleHashChange} handleLinkClick={handleLinkClick} card={card} />
-                card_list_dom.push(note)
+                    let note = <Container style={note_style} key={card['card']['id']} handleHashChange={handleHashChange} handleLinkClick={handleLinkClick} card={card} />
+                    card_list_dom.push(note)
+                }
             }
         }
 
         // 设置网页标题
         for (let k = 0; k < cardList.length; k++) {
-            if (cardList[k]['card']['id'] === ACTIVE_NOTE) {
+            if (cardList[k] && cardList[k]['card'] && cardList[k]['card']['id'] === ACTIVE_NOTE) {
 
-                if (cardList[k]['card']['title'] !== 'About') {
+                if (cardList[k]['card']['title'] && cardList[k]['card']['title'] !== 'About') {
                     document.title = cardList[k]['card']['title']
                 } else {
                     document.title = CONFIG.title

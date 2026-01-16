@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import WidgetBot, { API } from '@widgetbot/react-embed'
+import React from 'react';
+import WidgetBot from '@widgetbot/react-embed'
 import Nav from '../components/Nav';
 
 export default function Chat(props) {

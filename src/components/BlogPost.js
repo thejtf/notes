@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import localStorage from 'localStorage';
-import { format } from 'date-fns'
 import { getHeptabaseData } from '../constantFunction'
 
 import Loading from '../components/Loading'
@@ -43,13 +41,13 @@ class BlogPost extends React.Component {
 
     render() {
 
-        if (this.state.isLoading == false && this.state.posts != undefined) {
+        if (this.state.isLoading === false && this.state.posts !== undefined) {
             // 加载完毕
             console.log(this.state.posts);
             let posts = this.state.posts.cards
 
             let postList
-            if (posts != undefined && posts != null) {
+            if (posts !== undefined && posts !== null) {
 
                 postList = posts.map((post) =>
                     <li key={post.id} >

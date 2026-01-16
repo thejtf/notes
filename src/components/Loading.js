@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
 import '../index.css'
 
-import { Skeleton, Spin, ConfigProvider, Button } from 'antd';
+import { Skeleton } from 'antd';
 import 'antd/dist/reset.css';
 
 
 
 
 function Loading(props) {
-    let { slug } = useParams();
     let [rows, setRows] = useState(3)
 
     useEffect(() => {
@@ -18,15 +16,22 @@ function Loading(props) {
         // 设置动态加载样式
         let timer
         timer = setInterval(() => {
-            setRows(rows += 2)
-
-            if (rows > 10) {
-                clearInterval(timer);
-            }
-
+            setRows(prevRows => {
+                const newRows = prevRows + 2;
+                if (newRows > 10) {
+                    clearInterval(timer);
+                }
+                return newRows;
+            });
 
         }, 1400);
-    }, [slug])
+        
+        return () => {
+            if (timer) {
+                clearInterval(timer);
+            }
+        };
+    }, [])
 
 
 

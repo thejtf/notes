@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useUrlState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Tooltip from '@uiw/react-tooltip';
 import HeatMap from '@uiw/react-heat-map';
@@ -71,7 +71,8 @@ const CalendarHeatmap = () => {
     }
     setMapWidth()
 
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const setMapWidth = () => {
     let windowWidth = window.innerWidth

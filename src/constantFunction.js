@@ -1,8 +1,5 @@
 import CONFIG from "./config";
-import { Modal } from 'antd';
 import heptabaseData from './resources/data.json';
-
-const { confirm } = Modal;
 
 const getCardName = (cardId) => {
 
@@ -164,6 +161,7 @@ const getClearCard = (card, cards) => {
 }
 
 // 从服务端获取 Heptabase 的笔记数据
+// eslint-disable-next-line no-unused-vars
 const getHeptabaseDataFromServer = async () => {
     let myHeaders = new Headers();
     myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
@@ -381,48 +379,40 @@ const heptaContentTomd = (content_list, parent_node, parent_card_id) => {
 
             case 'card':
                 new_node = document.createElement('span')
-                new_node.innerHTML = content_list[i]['attrs']['cardTitle']
-                if (content_list[i]['attrs']['cardTitle'] === undefined) {
-                    // 找不到卡片标题，根据卡片 ID 匹配标题
-                    const card = getCardName(content_list[i]['attrs']['cardId'])
-
+                let cardTitle = content_list[i]['attrs']['cardTitle']
+                let cardId = content_list[i]['attrs']['cardId']
+                
+                // 调试信息
+                console.log('处理卡片链接：', {
+                    cardTitle: cardTitle,
+                    cardId: cardId,
+                    parentCardId: parent_card_id
+                });
+                
+                // 尝试获取有效的卡片标题
+                if (cardTitle === undefined || cardTitle === 'Invalid card') {
+                    console.log('卡片标题无效，尝试根据ID查找：', cardId);
+                    // 尝试根据卡片 ID 匹配标题
+                    const card = getCardName(cardId)
                     if (card) {
-                        new_node.innerHTML = card.title
+                        cardTitle = card.title
+                        console.log('找到卡片：', cardTitle);
+                    } else {
+                        console.log('未找到ID为', cardId, '的卡片');
+                        // 如果还是找不到，使用默认标题
+                        cardTitle = '未找到卡片'
                     }
-
+                } else {
+                    console.log('使用原始卡片标题：', cardTitle);
                 }
-
-                let bingo = false
-
-                if (content_list[i]['attrs']['cardTitle'] === 'Invalid card') {
-                    // 未知卡片
-                    // 在数据中先找一下
-                    let heptabase_blog_data = heptabaseData
-
-                    for (let k = 0; k < heptabase_blog_data.data.cards.length; k++) {
-                        if (heptabase_blog_data.data.cards[k]['id'] === content_list[i]['attrs']['cardId']) {
-                            new_node.innerHTML = heptabase_blog_data.data.cards[k]['title']
-                            bingo = true
-                            break
-                        }
-                    }
-
-                    // if (bingo === true) {
-                    //     new_node.classList.add('my_link')
-                    //     new_node.classList.add('article_link')
-                    //     new_node.setAttribute('path', '/post/' + content_list[i]['attrs']['cardId'])
-                    //     new_node.setAttribute('parent_note_id', parent_card_id)
-                    // } else {
-                    //     new_node.classList.add('unknown_card')
-                    // }
-
-
-                }
-
-                if (bingo === true || content_list[i]['attrs']['cardTitle'] !== 'Invalid card') {
+                
+                new_node.innerHTML = cardTitle
+                
+                // 如果有有效的卡片 ID，添加链接属性
+                if (cardId && cardTitle !== '未找到卡片') {
                     new_node.classList.add('my_link')
                     new_node.classList.add('article_link')
-                    new_node.setAttribute('path', '/post/' + content_list[i]['attrs']['cardId'])
+                    new_node.setAttribute('path', '/post/' + cardId)
                     new_node.setAttribute('parent_note_id', parent_card_id)
                 } else {
                     new_node.classList.add('unknown_card')
@@ -482,6 +472,7 @@ const heptaContentTomd = (content_list, parent_node, parent_card_id) => {
                 if ('marks' in content_list[i]) {
 
                     // 有行内样式
+                    // eslint-disable-next-line no-loop-func
                     content_list[i]['marks'].forEach(mark => {
 
                         switch (mark['type']) {

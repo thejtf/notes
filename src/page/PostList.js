@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef, useUrlState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import Nav from '../components/Nav';
 import BlogPost from '../components/BlogPost';
-import Container from '../components/Container';
 import Footer from '../components/Footer'
 
 // 笔记列表
@@ -14,7 +12,7 @@ function PostList(props) {
         // console.log('scrollTo(0, 0)');
         window.scrollTo(0, 0);
 
-    })
+    }, [])
 
 
     return <div>

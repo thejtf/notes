@@ -1,0 +1,7 @@
+{
+  "buildCommand": "yarn run build",
+  "outputDirectory": "build",
+  "framework": "create-react-app",
+  "installCommand": "yarn install"
+}
+

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, useUrlState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from "react-router";
 
 import { format } from 'date-fns'
@@ -14,7 +13,7 @@ import Loading from '../components/Loading'
 // import hljs from "highlight.js";
 
 import { ShareAltOutlined } from '@ant-design/icons';
-import { Button, message, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 
 
 // 文章正文
@@ -22,7 +21,6 @@ function Container(props) {
 
     // 记录文章的 DOM 信息，用来处理 DOM 元素，例如修改图片样式
     let post = useRef(null);
-    const { pathname } = useLocation();
     // Tooltips 显示、隐藏
     let [TooltipsOpen, setTooltipsOpen] = useState(false)
     // 记录当前文章的 ID
@@ -31,32 +29,14 @@ function Container(props) {
     // 当前路径信息
     let path = window.location.pathname
 
-    // 路径中包含的 post id，用以获取文章 md 信息
-    let path_id
-    if (path.indexOf('/post/') < 0) {
-
-        // 若路径中不含 post id，则取父组件的 props
-        path_id = props.post_id
-
-    } else {
-        path_id = path.replace('/post/', '')
-    }
-
 
 
     // 记录自定义的 Link 数据，用来实现 DOM 链接的间接跳转
     // let [my_link, setLink] = useState('');
 
     // 如果当前页面 ID 为空则获取数据
-    if (thisPageId == '') {
-        setPageID(props.post_id)
-    }
-
-    // 如果是移动端则增加图片的尺寸
-    let isMobile = navigator.userAgent.match(/Mobile/i)
-    let mobileSkale = 1
-    if (isMobile) {
-        mobileSkale = 2
+    if (thisPageId === '' && props.card && props.card.card) {
+        setPageID(props.card.card.id)
     }
 
     // 点击反向链接
@@ -137,7 +117,9 @@ function Container(props) {
     useEffect(() => {
 
         console.log('useEffect====================');
-        props.handleHashChange(window.location.href, props['card']['card']['id'])
+        if (props.card && props.card.card) {
+            props.handleHashChange(window.location.href, props['card']['card']['id'])
+        }
 
         // dom 加载完毕后
         if (post.current != null) {
@@ -163,8 +145,6 @@ function Container(props) {
             // 设置 a 链接的点击事件，将 a 按照 Link 的方式进行跳转，避免页面不必要的刷新
             let article_link = document.getElementsByClassName('article_link');
 
-            let links = []
-
             for (let i = 0; i < article_link.length; i++) {
 
                 if (article_link[i].classList.contains('article_link') !== true || article_link[i].getAttribute('path') === undefined || article_link[i].getAttribute('path') === null) {
@@ -180,15 +160,8 @@ function Container(props) {
 
             }
 
-            // 设置自定义 Link 并渲染到 DOM 中
-            // if (my_link == '' && links.length > 0) {
-            //     setLink(links)
-            // }
-
             // 滚动到对应卡片的位置
             setTimeout(() => {
-                let last_note = document.getElementsByClassName('container')
-                // console.log(last_note[last_note.length - 1]);
                 // document.getElementsByClassName('notes')[0].scrollTo({ left: last_note[last_note.length - 1].offsetLeft, behavior: 'smooth' })
             }, 100);
 
@@ -215,8 +188,6 @@ function Container(props) {
 
 
     } else {
-
-        let links = []
 
         // 反向链接
         let backLinksBox = <div className='markdown-body backLinks'>
@@ -249,17 +220,27 @@ function Container(props) {
 
 
 
-        return <div style={props['style']} ref={post} className='markdown-body container' note_id={props['card']['card']['id']}>
+        return <div style={props['style']} ref={post} className='markdown-body container' note_id={props['card'] && props['card']['card'] ? props['card']['card']['id'] : ''}>
 
-            <article className='note_article' dangerouslySetInnerHTML={{ __html: props['card']['card']['content'].innerHTML }}></article>
+            <article className='note_article' dangerouslySetInnerHTML={{ 
+                __html: props['card'] && props['card']['card'] && props['card']['card']['content'] instanceof HTMLElement 
+                    ? props['card']['card']['content'].innerHTML 
+                    : '' 
+            }}></article>
             <div className='article_bottom'>
                 <div style={{ flex: 1 }}>
-                    <time>Created {format(new Date(props['card']['card']['createdTime']), 'yyyy-MM-dd')}</time>
-                    <time>{props['card']['card']['lastEditedTimeDiff']}</time>
+                    {props['card'] && props['card']['card'] && props['card']['card']['createdTime'] && (
+                        <time>Created {format(new Date(props['card']['card']['createdTime']), 'yyyy-MM-dd')}</time>
+                    )}
+                    {props['card'] && props['card']['card'] && props['card']['card']['lastEditedTimeDiff'] && (
+                        <time>{props['card']['card']['lastEditedTimeDiff']}</time>
+                    )}
                 </div>
-                <Tooltip placement="left" color='green' title='Link copied' trigger='click' arrowPointAtCenter={false} onOpenChange={handleTooltipOnOpenChange} open={TooltipsOpen}>
-                    <Button onClick={handleCopyBtnClick} size="small" className="copy-btn" data-clipboard-text={window.location.origin + '/post?note-id=' + props['card']['card']['id']} icon={<ShareAltOutlined />} />
-                </Tooltip>
+                {props['card'] && props['card']['card'] && props['card']['card']['id'] && (
+                    <Tooltip placement="left" color='green' title='Link copied' trigger='click' arrowPointAtCenter={false} onOpenChange={handleTooltipOnOpenChange} open={TooltipsOpen}>
+                        <Button onClick={handleCopyBtnClick} size="small" className="copy-btn" data-clipboard-text={window.location.origin + '/post?note-id=' + props['card']['card']['id']} icon={<ShareAltOutlined />} />
+                    </Tooltip>
+                )}
             </div>
             {backLinksBox}
 
